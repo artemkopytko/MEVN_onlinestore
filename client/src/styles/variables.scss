@@ -1,0 +1,10 @@
+.hover-main {
+  transition: 0.3s color ease;
+  &:hover {
+    color: cornflowerblue;
+    transition: 0.3s color ease;
+  }
+}
+
+$primary-text-dark: #2c3e50;
+//$primary-highlight: cornflowerblue;

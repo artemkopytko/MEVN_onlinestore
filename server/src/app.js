@@ -20,13 +20,45 @@ db.once("open", function(callback){
 });
 
 var Product = require("../models/product");
+var User = require("../models/user");
 
+// Add a new user
+app.post('/register', (req, res) => {
+    var db = req.db;
+    var email = req.body.email;
+    var username = req.body.username;
+    var password = req.body.password;
+    var passwordConf = req.body.passwordConf;
+
+
+    if (email && username && password && passwordConf) {
+        var userData = new User({
+            email : email,
+            username : username,
+            password : password,
+            passwordConf : passwordConf
+        })
+
+        User.create(userData, function (err, user) {
+            console.log("user created");
+            if (err) {
+                console.log(err)
+            }
+            res.send({
+                success: true,
+                message: 'User registered successfully!',
+            })
+
+        });
+    }
+})
 // Add new post
 app.post('/products', (req, res) => {
     var db = req.db;
     var title = req.body.title;
     var description = req.body.description;
     var price = req.body.price;
+
     var new_product = new Product({
         title: title,
         description: description,
@@ -43,6 +75,16 @@ app.post('/products', (req, res) => {
         })
     })
 })
+
+// Fetch profile data
+app.get('/profile/:id', (req, res) => {
+    var db = req.db;
+    User.findById(req.params.id, 'email username password', function (error, profileData) {
+        if (error) { console.error(error); }
+        res.send(profileData)
+    })
+})
+
 
 // Fetch all posts
 app.get('/products', (req, res) => {
